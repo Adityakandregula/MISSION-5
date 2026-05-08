@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kanban Task Board</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      padding-bottom: 20px;
+    }
+
+    .kanban {
+      padding: 40px 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .kanban h1 {
+      text-align: center;
+      margin-bottom: 40px;
+      color: white;
+      font-size: 2.5em;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .add-task {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .add-task input {
+      padding: 14px 18px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background: white;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      flex: 1;
+      max-width: 350px;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    .add-task input:focus {
+      box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .add-task input::placeholder {
+      color: #999;
+    }
+
+    .add-task select {
+      padding: 14px 16px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background: white;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      color: #333;
+    }
+
+    .add-task select:hover {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .add-task button {
+      padding: 14px 32px;
+      font-size: 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .add-task button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+    }
+
+    .add-task button:active {
+      transform: translateY(0);
+    }
+
+    .columns {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      width: 100%;
+    }
+
+    .column {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      min-height: 500px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .column:hover {
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+      transform: translateY(-4px);
+    }
+
+    .column h2 {
+      text-align: center;
+      margin-bottom: 24px;
+      color: #333;
+      font-size: 1.3em;
+      font-weight: 700;
+      padding-bottom: 16px;
+      border-bottom: 3px solid #667eea;
+    }
+
+    .tasks-container {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 8px;
+    }
+
+    .task {
+      border-left: 4px solid;
+      padding: 16px;
+      margin-bottom: 14px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .task:hover {
+      transform: translateX(4px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+      background: white;
+    }
+
+    .task.high {
+      border-left-color: #e74c3c;
+      background: rgba(231, 76, 60, 0.05);
+    }
+
+    .task.medium {
+      border-left-color: #f39c12;
+      background: rgba(243, 156, 18, 0.05);
+    }
+
+    .task.low {
+      border-left-color: #27ae60;
+      background: rgba(39, 174, 96, 0.05);
+    }
+
+    .task-text {
+      display: block;
+      margin-bottom: 12px;
+      font-size: 16px;
+      color: #333;
+      font-weight: 500;
+      word-wrap: break-word;
+      line-height: 1.4;
+    }
+
+    .task input {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 16px;
+      border: 2px solid #667eea;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      font-family: inherit;
+      color: #333;
+      transition: all 0.2s ease;
+    }
+
+    .task input:focus {
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .actions button {
+      padding: 8px 12px;
+      font-size: 13px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      flex: 1;
+      min-width: 80px;
+      color: white;
+    }
+
+    .actions button.move-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    }
+
+    .actions button.move-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .actions button.delete-btn {
+      background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+      box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+    }
+
+    .actions button.delete-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+    }
+
+    .actions button:active {
+      transform: translateY(0);
+    }
+
+    @media (max-width: 768px) {
+      .kanban {
+        padding: 20px 16px;
+      }
+
+      .kanban h1 {
+        font-size: 2em;
+        margin-bottom: 24px;
+      }
+
+      .columns {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .add-task {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .add-task input {
+        max-width: none;
+      }
+
+      .actions button {
+        min-width: 60px;
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="kanban">
+    <h1>📋 Kanban Task Board</h1>
+    
+    <div class="add-task">
+      <input 
+        id="taskInput" 
+        type="text" 
+        placeholder="Add a new task..."
+      />
+      <select id="prioritySelect">
+        <option>High</option>
+        <option selected>Medium</option>
+        <option>Low</option>
+      </select>
+      <button onclick="addTask()">Add Task</button>
+    </div>
+
+    <div class="columns" id="columns">
+      <div class="column">
+        <h2>📝 To Do</h2>
+        <div class="tasks-container" id="todo"></div>
+      </div>
+      <div class="column">
+        <h2>⚙️ In Progress</h2>
+        <div class="tasks-container" id="inProgress"></div>
+      </div>
+      <div class="column">
+        <h2>✅ Done</h2>
+        <div class="tasks-container" id="done"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Data structure
+    let tasks = {
+      todo: [],
+      inProgress: [],
+      done: []
+    };
+
+    // Initialize
+    function init() {
+      loadTasks();
+      renderTasks();
+      setupEventListeners();
+    }
+
+    // Load tasks from localStorage
+    function loadTasks() {
+      const saved = localStorage.getItem('kanban-tasks');
+      if (saved) {
+        try {
+          tasks = JSON.parse(saved);
+        } catch (e) {
+          console.error('Error loading tasks:', e);
+          tasks = { todo: [], inProgress: [], done: [] };
+        }
+      }
+    }
+
+    // Save tasks to localStorage
+    function saveTasks() {
+      localStorage.setItem('kanban-tasks', JSON.stringify(tasks));
+    }
+
+    // Add new task
+    function addTask() {
+      const input = document.getElementById('taskInput');
+      const priority = document.getElementById('prioritySelect').value;
+      const text = input.value.trim();
+
+      if (!text) {
+        alert('Please enter a task');
+        return;
+      }
+
+      const task = {
+        id: Date.now(),
+        text: text,
+        priority: priority
+      };
+
+      tasks.todo.push(task);
+      saveTasks();
+      renderTasks();
+      input.value = '';
+      input.focus();
+    }
+
+    // Delete task
+    function deleteTask(column, id) {
+      tasks[column] = tasks[column].filter(t => t.id !== id);
+      saveTasks();
+      renderTasks();
+    }
+
+    // Move task
+    function moveTask(from, to, id) {
+      const task = tasks[from].find(t => t.id === id);
+      if (task) {
+        tasks[from] = tasks[from].filter(t => t.id !== id);
+        tasks[to].push(task);
+        saveTasks();
+        renderTasks();
+      }
+    }
+
+    // Edit task
+    function editTask(column, id, newText) {
+      const task = tasks[column].find(t => t.id === id);
+      if (task) {
+        task.text = newText.trim() || task.text;
+        saveTasks();
+        renderTasks();
+      }
+    }
+
+    // Render all tasks
+    function renderTasks() {
+      ['todo', 'inProgress', 'done'].forEach(column => {
+        const container = document.getElementById(column);
+        container.innerHTML = tasks[column].map(task => `
+          <div class="task ${task.priority.toLowerCase()}">
+            <div class="task-text" onclick="startEdit('${column}', ${task.id})">${escapeHtml(task.text)}</div>
+            <div class="actions">
+              ${column !== 'todo' ? `<button class="move-btn" onclick="moveTask('${column}', 'todo', ${task.id})">← To Do</button>` : ''}
+              ${column !== 'inProgress' ? `<button class="move-btn" onclick="moveTask('${column}', 'inProgress', ${task.id})">→ Progress</button>` : ''}
+              ${column !== 'done' ? `<button class="move-btn" onclick="moveTask('${column}', 'done', ${task.id})">✓ Done</button>` : ''}
+              <button class="delete-btn" onclick="deleteTask('${column}', ${task.id})">🗑️ Delete</button>
+            </div>
+          </div>
+        `).join('');
+      });
+    }
+
+    // Start editing task
+    function startEdit(column, id) {
+      const task = tasks[column].find(t => t.id === id);
+      if (!task) return;
+
+      const container = document.getElementById(column);
+      const taskEl = container.querySelector(`[data-task-id="${id}"]`);
+      
+      if (!taskEl) {
+        // Create edit input
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = task.text;
+        input.dataset.columnId = column;
+        input.dataset.taskId = id;
+
+        const taskDiv = event.target.closest('.task');
+        const textDiv = taskDiv.querySelector('.task-text');
+        textDiv.style.display = 'none';
+        taskDiv.insertBefore(input, taskDiv.querySelector('.actions'));
+        input.focus();
+
+        input.onblur = () => {
+          editTask(column, id, input.value);
+        };
+
+        input.onkeydown = (e) => {
+          if (e.key === 'Enter') {
+            editTask(column, id, input.value);
+          }
+        };
+      }
+    }
+
+    // Escape HTML
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      const input = document.getElementById('taskInput');
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          addTask();
+        }
+      });
+    }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

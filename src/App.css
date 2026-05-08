@@ -1,0 +1,328 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+}
+
+.kanban {
+  padding: 40px 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.kanban h1 {
+  text-align: center;
+  margin-bottom: 40px;
+  color: white;
+  font-size: 2.5em;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.add-task {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.add-task input {
+  padding: 14px 18px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  background: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  flex: 1;
+  max-width: 350px;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.add-task input:focus {
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+  transform: translateY(-2px);
+}
+
+.add-task input::placeholder {
+  color: #999;
+}
+
+.add-task select {
+  padding: 14px 16px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  background: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  color: #333;
+}
+
+.add-task select:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.add-task button {
+  padding: 14px 32px;
+  font-size: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.add-task button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+}
+
+.add-task button:active {
+  transform: translateY(0);
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  justify-content: stretch;
+  width: 100%;
+}
+
+.column {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  min-height: 500px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.column:hover {
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+}
+
+.column h2 {
+  text-align: center;
+  margin-bottom: 24px;
+  color: #333;
+  font-size: 1.3em;
+  font-weight: 700;
+  padding-bottom: 16px;
+  border-bottom: 3px solid #667eea;
+}
+
+.column > div:not(h2) {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.column > div:not(h2)::-webkit-scrollbar {
+  width: 6px;
+}
+
+.column > div:not(h2)::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.column > div:not(h2)::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 3px;
+}
+
+.column > div:not(h2)::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+.task {
+  border-left: 4px solid;
+  padding: 16px;
+  margin-bottom: 14px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.task:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  background: white;
+}
+
+.task[style*="borderColor: red"] {
+  border-left-color: #e74c3c;
+  background: rgba(231, 76, 60, 0.05);
+}
+
+.task[style*="borderColor: yellow"] {
+  border-left-color: #f39c12;
+  background: rgba(243, 156, 18, 0.05);
+}
+
+.task[style*="borderColor: green"] {
+  border-left-color: #27ae60;
+  background: rgba(39, 174, 96, 0.05);
+}
+
+.task span {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
+  word-wrap: break-word;
+  line-height: 1.4;
+}
+
+.task input {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 16px;
+  border: 2px solid #667eea;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  font-family: inherit;
+  color: #333;
+  transition: all 0.2s ease;
+}
+
+.task input:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.actions button {
+  padding: 8px 12px;
+  font-size: 13px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  flex: 1;
+  min-width: 80px;
+}
+
+.actions button:first-child {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.actions button:first-child:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.actions button:nth-child(2) {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.actions button:nth-child(2):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.actions button:nth-child(3) {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+}
+
+.actions button:nth-child(3):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+}
+
+.actions button:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .kanban {
+    padding: 20px 16px;
+  }
+
+  .kanban h1 {
+    font-size: 2em;
+    margin-bottom: 24px;
+  }
+
+  .columns {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .add-task {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .add-task input {
+    max-width: none;
+  }
+
+  .actions button {
+    min-width: 60px;
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+}
+
+#spacer {
+  height: 88px;
+  border-top: 1px solid var(--border);
+  @media (max-width: 1024px) {
+    height: 48px;
+  }
+}
+
+.ticks {
+  position: relative;
+  width: 100%;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: -4.5px;
+    border: 5px solid transparent;
+  }
+
+  &::before {
+    left: 0;
+    border-left-color: var(--border);
+  }
+  &::after {
+    right: 0;
+    border-right-color: var(--border);
+  }
+}
